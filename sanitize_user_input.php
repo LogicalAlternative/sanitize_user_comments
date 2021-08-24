@@ -6,10 +6,10 @@
 //
 // generally useful for cleaning up user provided content
 
-$in = "My email is: evelyn@fakedomain.net, oh and check out my website: www.logalt.net/fred/_or_bill/infectya.aspx or call me at 123 554 3242.";
+$in = "My email is: evelyn@fakedomain.net, oh and check out my website: www.logalt.net/fred/_or_bill/infectya.aspx or test.com call me at 123 554 3242.";
 
-echo 'Calling sanitize_user_comments with:<br>' . $in . '<br><br>';
-echo 'Cleaned Version: ' . sanitize_user_comments($in) . '<br><br>';
+echo 'Calling sanitize_user_comments with: ' . $in . '<br>';
+echo 'Cleaned Version: ' . sanitize_user_comments($in) . '<br>';
 
 function sanitize_user_comments($in) {
   $out = $in;
@@ -27,22 +27,16 @@ function sanitize_user_comments($in) {
   $out = preg_replace($url_regexp, '', $out);
 
   // Remove non-URL link related words starting or ending with specified values
-  $badWords = array('http://','https://','ftp://','file://','www','.com','.net','.org','.de','.icu','.uk','.ru','.info','.top','.xyz','.tk','.cn','.ga','.cf','.nl');
-  $outArr = explode($out, ' ');
-  echo '<br><br>Bad Words<br>';
-  echo 'Matches:<br>';
+  $badWords = array('http://','https://','ftp://','file://','www.','.com','.net','.org','.de','.icu','.uk','.ru','.info','.top','.xyz','.tk','.cn','.ga','.cf','.nl');
+  $outWords = explode(' ', $out);
   foreach($badWords as $badWord) {
-     if ( array_search_partial( $outArr, $badWord )) { echo $badWord . '<br>'; };
-  }
-
-  return $out;
-}
-
-function array_search_partial($arr, $keyword) {
-    foreach($arr as $index => $string) {
-        if (strpos($string, $keyword) !== FALSE)
-            return $index;
+    foreach($outWords as $index => $word) {
+      if (strpos($word, $badWord) !== FALSE) {
+        unset($outWords[$index]); }
     }
+  }
+  $out = implode(' ', $outWords);
+  return $out;
 }
 
 ?>
